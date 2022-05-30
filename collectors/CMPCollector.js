@@ -28,7 +28,7 @@ class CMPCollector extends BaseCollector {
      */
     init(options) {
         this.context = options.context;
-        this.doOptOut = Boolean(options.collectorFlags.runAutoconsent);
+        this.doOptIn = Boolean(options.collectorFlags.runAutoconsent);
         this.log = options.log;
         /**
          * @type {import('puppeteer').Frame[]}
@@ -54,14 +54,14 @@ class CMPCollector extends BaseCollector {
                                 const entry = {
                                     name: this.tab.getCMPName(),
                                     isOpen: (await this.tab.isPopupOpen(10, 100)) || false,
-                                    optOutRuns: false,
-                                    optOutSucceeds: false,
+                                    optInRuns: false,
+                                    optInSucceeds: false,
                                     error: '',
                                 };
                                 try {
-                                    if (this.doOptOut) {
-                                        entry.optOutRuns = entry.isOpen && await this.tab.doOptOut();
-                                        entry.optOutSucceeds = this.tab.hasTest() && await this.tab.testOptOutWorked();
+                                    if (this.doOptIn) {
+                                        entry.optInRuns = entry.isOpen && await this.tab.doOptIn();
+                                        entry.optInSucceeds = this.tab.hasTest() && !await this.tab.testOptOutWorked();
                                     }
                                 } catch (e) {
                                     entry.error = e.toString();
